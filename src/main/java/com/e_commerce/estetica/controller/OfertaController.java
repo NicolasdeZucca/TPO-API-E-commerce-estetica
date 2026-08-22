@@ -14,7 +14,7 @@ import java.util.List;
 public class OfertaController {
 
     @Autowired
-    private OfertaRepository ofertaRepository;
+    private OfertaRepository ofertaService;
 
     // ENDPOINT TRAER TODAS LAS OFERTAS (CON GET)
     @GetMapping
