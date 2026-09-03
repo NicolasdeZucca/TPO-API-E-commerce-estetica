@@ -25,4 +25,30 @@ public class OfertaService {
         // validar que la oferta no sea nula eje
         return ofertaRepository.save(nuevaOferta);
     }
+
+
+     // --- LOS 3 MÉTODOS NUEVOS PARA HACER CRUD ---
+
+    public Oferta buscarOfertaPorId(Long id) {
+        return ofertaRepository.findById(id).orElse(null);
+    }
+
+    public Oferta actualizarOferta(Long id, Oferta ofertaActualizada) {
+        Oferta ofertaExistente = buscarOfertaPorId(id);
+        if (ofertaExistente != null) {
+            ofertaExistente.setTitulo(ofertaActualizada.getTitulo());
+            ofertaExistente.setDescripcion(ofertaActualizada.getDescripcion());
+            ofertaExistente.setPrecioDescuento(ofertaActualizada.getPrecioDescuento());
+            return ofertaRepository.save(ofertaExistente);
+        }
+        return null;
+    }
+
+    public void eliminarOferta(Long id) {
+        ofertaRepository.deleteById(id);
+    }
+
+
+
+
 }

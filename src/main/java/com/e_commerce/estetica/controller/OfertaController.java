@@ -34,4 +34,35 @@ import java.util.List;
         Oferta ofertaGuardada = ofertaService.crearOferta(nuevaOferta);
         return new ResponseEntity<>(ofertaGuardada, HttpStatus.CREATED);
     }
+
+
+    // --- AGREGO 3 ENDPOINTS NUEVOS DEL CRUD ---
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Oferta> buscarPorId(@PathVariable Long id) {
+        Oferta oferta = ofertaService.buscarOfertaPorId(id);
+        if (oferta != null) {
+            return new ResponseEntity<>(oferta, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Oferta> actualizarOferta(@PathVariable Long id, @RequestBody Oferta oferta) {
+        Oferta actualizada = ofertaService.actualizarOferta(id, oferta);
+        if (actualizada != null) {
+            return new ResponseEntity<>(actualizada, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarOferta(@PathVariable Long id) {
+        ofertaService.eliminarOferta(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 2ESTE ES EL CÓDIGO QUE SE AGREGA PARA ELIMINAR UNA OFERTA
+    }
+
+
+
+
 }
