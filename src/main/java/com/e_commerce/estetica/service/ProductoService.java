@@ -10,7 +10,7 @@ public class ProductoService {
 
     private final ProductoRepository productoRepository;
 
-    // Aquí usamos inyección por constructor (¡Como le gusta a tu profe!)
+    // Aquí usamos inyección por constructor 
     public ProductoService(ProductoRepository productoRepository) {
         this.productoRepository = productoRepository;
     }
