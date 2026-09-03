@@ -13,7 +13,6 @@ public class ProductoController {
 
     private final ProductoService productoService;
 
-    // Inyección por constructor
     public ProductoController(ProductoService productoService) {
         this.productoService = productoService;
     }
