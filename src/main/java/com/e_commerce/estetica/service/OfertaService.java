@@ -1,5 +1,7 @@
 package com.e_commerce.estetica.service;
 
+import com.e_commerce.estetica.dto.OfertaRequestDTO;
+import com.e_commerce.estetica.dto.OfertaResponseDTO;
 import com.e_commerce.estetica.exception.BadRequestException;
 import com.e_commerce.estetica.exception.ResourceNotFoundException;
 import com.e_commerce.estetica.model.Oferta;
@@ -17,30 +19,44 @@ public class OfertaService {
         this.ofertaRepository = ofertaRepository;
     }
 
-    public List<Oferta> traerOfertas() {
-        return ofertaRepository.findAll();
+    public List<OfertaResponseDTO> traerOfertas() {
+        return ofertaRepository.findAll()
+                .stream()
+                .map(OfertaResponseDTO::new)
+                .toList();
     }
 
-    public Oferta buscarOfertaPorId(Long id) {
+    public OfertaResponseDTO buscarOfertaPorId(Long id) {
+        Oferta oferta = buscarEntidadPorId(id);
+        return new OfertaResponseDTO(oferta);
+    }
+
+    public Oferta buscarEntidadPorId(Long id) {
         return ofertaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Oferta", id));
     }
 
-    public Oferta crearOferta(Oferta nuevaOferta) {
-        validarOferta(nuevaOferta);
-        return ofertaRepository.save(nuevaOferta);
+    public OfertaResponseDTO crearOferta(OfertaRequestDTO dto) {
+        validarOferta(dto);
+        Oferta nuevaOferta = new Oferta();
+        nuevaOferta.setTitulo(dto.getTitulo());
+        nuevaOferta.setDescripcion(dto.getDescripcion());
+        nuevaOferta.setPrecioDescuento(dto.getPrecioDescuento());
+        Oferta guardada = ofertaRepository.save(nuevaOferta);
+        return new OfertaResponseDTO(guardada);
     }
 
-    public Oferta actualizarOferta(Long id, Oferta ofertaActualizada) {
-        Oferta ofertaExistente = buscarOfertaPorId(id);
+    public OfertaResponseDTO actualizarOferta(Long id, OfertaRequestDTO dto) {
+        Oferta existente = buscarEntidadPorId(id);
 
-        validarOferta(ofertaActualizada);
+        validarOferta(dto);
 
-        ofertaExistente.setTitulo(ofertaActualizada.getTitulo());
-        ofertaExistente.setDescripcion(ofertaActualizada.getDescripcion());
-        ofertaExistente.setPrecioDescuento(ofertaActualizada.getPrecioDescuento());
+        existente.setTitulo(dto.getTitulo());
+        existente.setDescripcion(dto.getDescripcion());
+        existente.setPrecioDescuento(dto.getPrecioDescuento());
 
-        return ofertaRepository.save(ofertaExistente);
+        Oferta actualizada = ofertaRepository.save(existente);
+        return new OfertaResponseDTO(actualizada);
     }
 
     public void eliminarOferta(Long id) {
@@ -50,12 +66,12 @@ public class OfertaService {
         ofertaRepository.deleteById(id);
     }
 
-    private void validarOferta(Oferta oferta) {
-        if (oferta.getTitulo() == null || oferta.getTitulo().isBlank()) {
+    private void validarOferta(OfertaRequestDTO dto) {
+        if (dto.getTitulo() == null || dto.getTitulo().isBlank()) {
             throw new BadRequestException("El título de la oferta es obligatorio");
         }
-        if (oferta.getPrecioDescuento() == null || oferta.getPrecioDescuento() <= 0) {
-            throw new BadRequestException("El precio con descuento debe ser mayor a cero");
+        if (dto.getPrecioDescuento() == null || dto.getPrecioDescuento() <= 0) {
+            throw new BadRequestException("El precio de descuento debe ser mayor a cero");
         }
     }
 }

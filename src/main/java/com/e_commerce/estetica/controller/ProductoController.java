@@ -1,6 +1,7 @@
 package com.e_commerce.estetica.controller;
 
-import com.e_commerce.estetica.model.Producto;
+import com.e_commerce.estetica.dto.ProductoRequestDTO;
+import com.e_commerce.estetica.dto.ProductoResponseDTO;
 import com.e_commerce.estetica.service.ProductoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +20,23 @@ public class ProductoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Producto>> traerTodos() {
+    public ResponseEntity<List<ProductoResponseDTO>> traerTodos() {
         return ResponseEntity.ok(productoService.traerProductos());
     }
 
     @PostMapping
-    public ResponseEntity<Producto> crear(@RequestBody Producto prod) {
-        return new ResponseEntity<>(productoService.crearProducto(prod), HttpStatus.CREATED);
+    public ResponseEntity<ProductoResponseDTO> crear(@RequestBody ProductoRequestDTO dto) {
+        return new ResponseEntity<>(productoService.crearProducto(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> buscar(@PathVariable Long id) {
+    public ResponseEntity<ProductoResponseDTO> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(productoService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizar(@PathVariable Long id, @RequestBody Producto prod) {
-        return ResponseEntity.ok(productoService.actualizarProducto(id, prod));
+    public ResponseEntity<ProductoResponseDTO> actualizar(@PathVariable Long id, @RequestBody ProductoRequestDTO dto) {
+        return ResponseEntity.ok(productoService.actualizarProducto(id, dto));
     }
 
     @DeleteMapping("/{id}")

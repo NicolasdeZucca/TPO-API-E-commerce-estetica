@@ -1,6 +1,7 @@
 package com.e_commerce.estetica.controller;
 
-import com.e_commerce.estetica.model.Oferta;
+import com.e_commerce.estetica.dto.OfertaRequestDTO;
+import com.e_commerce.estetica.dto.OfertaResponseDTO;
 import com.e_commerce.estetica.service.OfertaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +20,23 @@ public class OfertaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Oferta>> traerOfertas() {
+    public ResponseEntity<List<OfertaResponseDTO>> traerOfertas() {
         return ResponseEntity.ok(ofertaService.traerOfertas());
     }
 
     @PostMapping
-    public ResponseEntity<Oferta> crearOferta(@RequestBody Oferta nuevaOferta) {
-        return new ResponseEntity<>(ofertaService.crearOferta(nuevaOferta), HttpStatus.CREATED);
+    public ResponseEntity<OfertaResponseDTO> crearOferta(@RequestBody OfertaRequestDTO dto) {
+        return new ResponseEntity<>(ofertaService.crearOferta(dto), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Oferta> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<OfertaResponseDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(ofertaService.buscarOfertaPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Oferta> actualizarOferta(@PathVariable Long id, @RequestBody Oferta oferta) {
-        return ResponseEntity.ok(ofertaService.actualizarOferta(id, oferta));
+    public ResponseEntity<OfertaResponseDTO> actualizarOferta(@PathVariable Long id, @RequestBody OfertaRequestDTO dto) {
+        return ResponseEntity.ok(ofertaService.actualizarOferta(id, dto));
     }
 
     @DeleteMapping("/{id}")

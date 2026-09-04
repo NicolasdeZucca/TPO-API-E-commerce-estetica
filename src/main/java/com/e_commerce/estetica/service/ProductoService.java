@@ -1,5 +1,7 @@
 package com.e_commerce.estetica.service;
 
+import com.e_commerce.estetica.dto.ProductoRequestDTO;
+import com.e_commerce.estetica.dto.ProductoResponseDTO;
 import com.e_commerce.estetica.exception.BadRequestException;
 import com.e_commerce.estetica.exception.ResourceNotFoundException;
 import com.e_commerce.estetica.model.Producto;
@@ -17,30 +19,44 @@ public class ProductoService {
         this.productoRepository = productoRepository;
     }
 
-    public List<Producto> traerProductos() {
-        return productoRepository.findAll();
+    public List<ProductoResponseDTO> traerProductos() {
+        return productoRepository.findAll()
+                .stream()
+                .map(ProductoResponseDTO::new)
+                .toList();
     }
 
-    public Producto buscarPorId(Long id) {
+    public ProductoResponseDTO buscarPorId(Long id) {
+        Producto producto = buscarEntidadPorId(id);
+        return new ProductoResponseDTO(producto);
+    }
+
+    public Producto buscarEntidadPorId(Long id) {
         return productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto", id));
     }
 
-    public Producto crearProducto(Producto producto) {
-        validarProducto(producto);
-        return productoRepository.save(producto);
+    public ProductoResponseDTO crearProducto(ProductoRequestDTO dto) {
+        validarProducto(dto);
+        Producto producto = new Producto();
+        producto.setNombre(dto.getNombre());
+        producto.setMarca(dto.getMarca());
+        producto.setPrecio(dto.getPrecio());
+        Producto guardado = productoRepository.save(producto);
+        return new ProductoResponseDTO(guardado);
     }
 
-    public Producto actualizarProducto(Long id, Producto prodAct) {
-        Producto prodDb = buscarPorId(id);   // si no existe, ya lanza 404 acá
+    public ProductoResponseDTO actualizarProducto(Long id, ProductoRequestDTO dto) {
+        Producto prodDb = buscarEntidadPorId(id);
 
-        validarProducto(prodAct);
+        validarProducto(dto);
 
-        prodDb.setNombre(prodAct.getNombre());
-        prodDb.setMarca(prodAct.getMarca());
-        prodDb.setPrecio(prodAct.getPrecio());
+        prodDb.setNombre(dto.getNombre());
+        prodDb.setMarca(dto.getMarca());
+        prodDb.setPrecio(dto.getPrecio());
 
-        return productoRepository.save(prodDb);
+        Producto actualizado = productoRepository.save(prodDb);
+        return new ProductoResponseDTO(actualizado);
     }
 
     public void eliminarProducto(Long id) {
@@ -51,11 +67,11 @@ public class ProductoService {
     }
 
     // Validaciones de negocio reutilizadas por crear y actualizar
-    private void validarProducto(Producto producto) {
-        if (producto.getNombre() == null || producto.getNombre().isBlank()) {
+    private void validarProducto(ProductoRequestDTO dto) {
+        if (dto.getNombre() == null || dto.getNombre().isBlank()) {
             throw new BadRequestException("El nombre del producto es obligatorio");
         }
-        if (producto.getPrecio() == null || producto.getPrecio() <= 0) {
+        if (dto.getPrecio() == null || dto.getPrecio() <= 0) {
             throw new BadRequestException("El precio debe ser mayor a cero");
         }
     }
