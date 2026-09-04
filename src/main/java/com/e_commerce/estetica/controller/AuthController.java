@@ -58,7 +58,7 @@ public class AuthController {
         usuario.setApellido(request.getApellido());
         usuario.setEmail(request.getEmail());
         usuario.setPassword(passwordEncoder.encode(request.getPassword())); // Encripta con BCrypt
-        usuario.setRol(Role.ROLE_CLIENTE); // Por defecto es cliente
+        usuario.setRol(Role.ROLE_ADMIN); // Por defecto es admin
 
         usuarioRepository.save(usuario);
 
