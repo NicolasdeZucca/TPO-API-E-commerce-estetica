@@ -1,42 +1,29 @@
 package com.e_commerce.estetica.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Oferta {
-
+public class CarritoItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String titulo;
+    private Integer cantidad;
 
-    @Column(nullable = false)
-    private String descripcion;
-
-    @Column(nullable = false)
-    private Double porcentajeDescuento;
-
-    @Column(nullable = false)
-    private LocalDateTime fechaInicio;
-
-    @Column(nullable = false)
-    private LocalDateTime fechaFin;
-
-    @Column(nullable = false)
-    private Boolean activa = false;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "carrito_id", nullable = false)
+    @JsonIgnore
+    private Carrito carrito;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id", nullable = false)

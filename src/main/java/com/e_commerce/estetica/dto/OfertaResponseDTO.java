@@ -21,6 +21,6 @@ public class OfertaResponseDTO {
         this.id = oferta.getId();
         this.titulo = oferta.getTitulo();
         this.descripcion = oferta.getDescripcion();
-        this.precioDescuento = oferta.getPrecioDescuento();
+        this.precioDescuento = oferta.getPorcentajeDescuento();
     }
 }

@@ -41,7 +41,7 @@ public class OfertaService {
         Oferta nuevaOferta = new Oferta();
         nuevaOferta.setTitulo(dto.getTitulo());
         nuevaOferta.setDescripcion(dto.getDescripcion());
-        nuevaOferta.setPrecioDescuento(dto.getPrecioDescuento());
+        nuevaOferta.setPorcentajeDescuento(dto.getPrecioDescuento());
         Oferta guardada = ofertaRepository.save(nuevaOferta);
         return new OfertaResponseDTO(guardada);
     }
@@ -53,7 +53,7 @@ public class OfertaService {
 
         existente.setTitulo(dto.getTitulo());
         existente.setDescripcion(dto.getDescripcion());
-        existente.setPrecioDescuento(dto.getPrecioDescuento());
+        existente.setPorcentajeDescuento(dto.getPrecioDescuento());
 
         Oferta actualizada = ofertaRepository.save(existente);
         return new OfertaResponseDTO(actualizada);
