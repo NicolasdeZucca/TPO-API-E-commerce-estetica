@@ -20,7 +20,7 @@ public class ProductoService {
     }
 
     public List<ProductoResponseDTO> traerProductos() {
-        return productoRepository.findAll()
+        return productoRepository.findAllByOrderByNombreAsc()
                 .stream()
                 .map(ProductoResponseDTO::new)
                 .toList();
@@ -40,8 +40,10 @@ public class ProductoService {
         validarProducto(dto);
         Producto producto = new Producto();
         producto.setNombre(dto.getNombre());
+        producto.setDescripcion(dto.getDescripcion());
         producto.setMarca(dto.getMarca());
         producto.setPrecio(dto.getPrecio());
+        producto.setStock(dto.getStock());
         Producto guardado = productoRepository.save(producto);
         return new ProductoResponseDTO(guardado);
     }
@@ -52,8 +54,10 @@ public class ProductoService {
         validarProducto(dto);
 
         prodDb.setNombre(dto.getNombre());
+        prodDb.setDescripcion(dto.getDescripcion());
         prodDb.setMarca(dto.getMarca());
         prodDb.setPrecio(dto.getPrecio());
+        prodDb.setStock(dto.getStock());
 
         Producto actualizado = productoRepository.save(prodDb);
         return new ProductoResponseDTO(actualizado);
