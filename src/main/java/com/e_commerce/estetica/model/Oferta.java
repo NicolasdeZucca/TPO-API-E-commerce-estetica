@@ -1,15 +1,12 @@
 package com.e_commerce.estetica.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;     
-import lombok.Setter;          
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Getter  
-@Setter                   
+@Getter
+@Setter
 public class Oferta {
 
     @Id
@@ -20,4 +17,8 @@ public class Oferta {
     private String descripcion;
     private Double precioDescuento;
 
+    // Muchas ofertas pueden aplicar a un producto
+    @ManyToOne
+    @JoinColumn(name = "producto_id")
+    private Producto producto;
 }
