@@ -2,8 +2,8 @@ package com.e_commerce.estetica.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class GenericException extends ApiException {
-    public GenericException(String message) {
+public class BadRequestException extends ApiException {
+    public BadRequestException(String message) {
         super(message, HttpStatus.BAD_REQUEST);
     }
 }

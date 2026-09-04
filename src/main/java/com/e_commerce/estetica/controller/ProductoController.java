@@ -5,6 +5,7 @@ import com.e_commerce.estetica.service.ProductoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -18,30 +19,28 @@ public class ProductoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Producto>> traerTodos() { 
-        return new ResponseEntity<>(productoService.traerProductos(), HttpStatus.OK); 
+    public ResponseEntity<List<Producto>> traerTodos() {
+        return ResponseEntity.ok(productoService.traerProductos());
     }
-    
+
     @PostMapping
-    public ResponseEntity<Producto> crear(@RequestBody Producto prod) { 
-        return new ResponseEntity<>(productoService.crearProducto(prod), HttpStatus.CREATED); 
+    public ResponseEntity<Producto> crear(@RequestBody Producto prod) {
+        return new ResponseEntity<>(productoService.crearProducto(prod), HttpStatus.CREATED);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<Producto> buscar(@PathVariable Long id) {
-        Producto p = productoService.buscarPorId(id);
-        return p != null ? new ResponseEntity<>(p, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(productoService.buscarPorId(id));
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<Producto> actualizar(@PathVariable Long id, @RequestBody Producto prod) {
-        Producto p = productoService.actualizarProducto(id, prod);
-        return p != null ? new ResponseEntity<>(p, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(productoService.actualizarProducto(id, prod));
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         productoService.eliminarProducto(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

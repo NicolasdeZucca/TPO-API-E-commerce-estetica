@@ -1,5 +1,6 @@
 package com.e_commerce.estetica.controller;
 
+import com.e_commerce.estetica.dto.UsuarioResponse;
 import com.e_commerce.estetica.model.Usuario;
 import com.e_commerce.estetica.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -19,36 +20,33 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> traerTodos() {
-        return new ResponseEntity<>(usuarioService.traerUsuarios(), HttpStatus.OK);
+    public ResponseEntity<List<UsuarioResponse>> traerTodos() {
+        List<UsuarioResponse> usuarios = usuarioService.traerUsuarios()
+                .stream()
+                .map(UsuarioResponse::new)
+                .toList();
+        return ResponseEntity.ok(usuarios);
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> crear(@RequestBody Usuario usuario) {
-        return new ResponseEntity<>(usuarioService.crearUsuario(usuario), HttpStatus.CREATED);
+    public ResponseEntity<UsuarioResponse> crear(@RequestBody Usuario usuario) {
+        Usuario creado = usuarioService.crearUsuario(usuario);
+        return new ResponseEntity<>(new UsuarioResponse(creado), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
-        Usuario u = usuarioService.buscarPorId(id);
-        if (u != null) {
-            return new ResponseEntity<>(u, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(new UsuarioResponse(usuarioService.buscarPorId(id)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> actualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
-        Usuario actualizado = usuarioService.actualizarUsuario(id, usuario);
-        if (actualizado != null) {
-            return new ResponseEntity<>(actualizado, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<UsuarioResponse> actualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
+        return ResponseEntity.ok(new UsuarioResponse(usuarioService.actualizarUsuario(id, usuario)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         usuarioService.eliminarUsuario(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

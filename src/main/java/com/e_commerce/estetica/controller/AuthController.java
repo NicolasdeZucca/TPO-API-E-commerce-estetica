@@ -4,6 +4,7 @@ import com.e_commerce.estetica.config.JwtUtils;
 import com.e_commerce.estetica.dto.AuthResponse;
 import com.e_commerce.estetica.dto.LoginRequest;
 import com.e_commerce.estetica.dto.RegisterRequest;
+import com.e_commerce.estetica.exception.DuplicateResourceException;
 import com.e_commerce.estetica.model.Role;
 import com.e_commerce.estetica.model.Usuario;
 import com.e_commerce.estetica.repository.UsuarioRepository;
@@ -38,9 +39,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
 
-        // Verificar si el email ya existe
-        if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT); // 409
+        // Si el email ya existe, lanza 409 con mensaje (lo atrapa el GlobalExceptionHandler)
+        if (usuarioRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException(
+                    "Ya existe un usuario registrado con el email: " + request.getEmail());
         }
 
         // Crear el usuario nuevo
@@ -56,14 +58,17 @@ public class AuthController {
         // Generar el token JWT
         String token = jwtUtils.generateToken(usuario.getEmail(), usuario.getRol().name());
 
-        return new ResponseEntity<>(new AuthResponse(token, usuario.getEmail(), usuario.getRol().name()), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new AuthResponse(token, usuario.getEmail(), usuario.getRol().name()),
+                HttpStatus.CREATED);
     }
 
     // LOGIN de un usuario existente
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
 
-        // Autenticar con Spring Security (valida email + password)
+        // Autentica email + password. Si fallan, Spring Security lanza
+        // BadCredentialsException y el handler responde 401 con mensaje.
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
@@ -74,6 +79,7 @@ public class AuthController {
         // Generar el token JWT
         String token = jwtUtils.generateToken(usuario.getEmail(), usuario.getRol().name());
 
-        return new ResponseEntity<>(new AuthResponse(token, usuario.getEmail(), usuario.getRol().name()), HttpStatus.OK);
+        return ResponseEntity.ok(
+                new AuthResponse(token, usuario.getEmail(), usuario.getRol().name()));
     }
 }
