@@ -40,9 +40,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
 
-        if (usuarioRepository.existsByNombreUsuario(request.getNombreUsuario())) {
+        if (usuarioRepository.existsByNombreUsuario(request.getNombre())) {
             throw new DuplicateResourceException(
-                    "Ya existe un usuario registrado con el nombre de usuario: " + request.getNombreUsuario());
+                    "Ya existe un usuario registrado con el nombre de usuario: " + request.getNombre());
         }
 
         // Si el email ya existe, lanza 409 con mensaje (lo atrapa el GlobalExceptionHandler)
@@ -53,7 +53,7 @@ public class AuthController {
 
         // Crear el usuario nuevo
         Usuario usuario = new Usuario();
-        usuario.setNombreUsuario(request.getNombreUsuario());
+        usuario.setNombreUsuario(request.getNombre());
         usuario.setNombre(request.getNombre());
         usuario.setApellido(request.getApellido());
         usuario.setEmail(request.getEmail());
