@@ -19,7 +19,7 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
+    @GetMapping({"", "/"})
     public ResponseEntity<List<UsuarioResponse>> traerTodos() {
         List<UsuarioResponse> usuarios = usuarioService.traerUsuarios()
                 .stream()
