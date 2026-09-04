@@ -6,6 +6,7 @@ import com.e_commerce.estetica.service.ProductoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductoResponseDTO> crear(@RequestBody ProductoRequestDTO dto) {
+    public ResponseEntity<ProductoResponseDTO> crear(@Valid @RequestBody ProductoRequestDTO dto) {
         return new ResponseEntity<>(productoService.crearProducto(dto), HttpStatus.CREATED);
     }
 
@@ -35,7 +36,7 @@ public class ProductoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoResponseDTO> actualizar(@PathVariable Long id, @RequestBody ProductoRequestDTO dto) {
+    public ResponseEntity<ProductoResponseDTO> actualizar(@PathVariable Long id,@Valid @RequestBody ProductoRequestDTO dto) {
         return ResponseEntity.ok(productoService.actualizarProducto(id, dto));
     }
 
@@ -44,4 +45,6 @@ public class ProductoController {
         productoService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
+
+    
 }
