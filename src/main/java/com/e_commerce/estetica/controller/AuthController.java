@@ -8,6 +8,7 @@ import com.e_commerce.estetica.exception.DuplicateResourceException;
 import com.e_commerce.estetica.model.Role;
 import com.e_commerce.estetica.model.Usuario;
 import com.e_commerce.estetica.repository.UsuarioRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,7 +38,12 @@ public class AuthController {
 
     // REGISTRO de un nuevo usuario
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+
+        if (usuarioRepository.existsByNombreUsuario(request.getNombreUsuario())) {
+            throw new DuplicateResourceException(
+                    "Ya existe un usuario registrado con el nombre de usuario: " + request.getNombreUsuario());
+        }
 
         // Si el email ya existe, lanza 409 con mensaje (lo atrapa el GlobalExceptionHandler)
         if (usuarioRepository.existsByEmail(request.getEmail())) {
@@ -47,6 +53,7 @@ public class AuthController {
 
         // Crear el usuario nuevo
         Usuario usuario = new Usuario();
+        usuario.setNombreUsuario(request.getNombreUsuario());
         usuario.setNombre(request.getNombre());
         usuario.setApellido(request.getApellido());
         usuario.setEmail(request.getEmail());
@@ -65,7 +72,7 @@ public class AuthController {
 
     // LOGIN de un usuario existente
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
 
         // Autentica email + password. Si fallan, Spring Security lanza
         // BadCredentialsException y el handler responde 401 con mensaje.
