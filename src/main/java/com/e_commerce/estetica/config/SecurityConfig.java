@@ -54,6 +54,7 @@ public class SecurityConfig {
                 // Catálogo público: cualquiera puede VER productos y ofertas
                 .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/ofertas/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                 // Crear, modificar o eliminar productos/ofertas: solo ADMIN
                 .requestMatchers(HttpMethod.POST, "/api/productos/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAuthority("ROLE_ADMIN")
@@ -61,6 +62,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/ofertas/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/ofertas/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/ofertas/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/categorias/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/categorias/**").hasAuthority("ROLE_ADMIN")
                 // Gestión de usuarios: solo ADMIN
                 .requestMatchers("/api/usuarios/**").hasAuthority("ROLE_ADMIN")
                 // Todo lo demás requiere estar autenticado
