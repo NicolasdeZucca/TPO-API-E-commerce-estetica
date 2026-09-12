@@ -1,5 +1,6 @@
 package com.e_commerce.estetica.service;
 
+import com.e_commerce.estetica.dto.UsuarioResponse;
 import com.e_commerce.estetica.exception.BadRequestException;
 import com.e_commerce.estetica.exception.DuplicateResourceException;
 import com.e_commerce.estetica.exception.ResourceNotFoundException;
@@ -18,16 +19,23 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public List<Usuario> traerUsuarios() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponse> traerUsuarios() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(UsuarioResponse::new)
+                .toList();
     }
 
-    public Usuario buscarPorId(Long id) {
+    public UsuarioResponse buscarPorId(Long id) {
+        return new UsuarioResponse(buscarEntidadPorId(id));
+    }
+
+    public Usuario buscarEntidadPorId(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", id));
     }
 
-    public Usuario crearUsuario(Usuario usuario) {
+    public UsuarioResponse crearUsuario(Usuario usuario) {
         if (usuario.getEmail() == null || usuario.getEmail().isBlank()) {
             throw new BadRequestException("El email es obligatorio");
         }
@@ -35,13 +43,12 @@ public class UsuarioService {
             throw new DuplicateResourceException(
                     "Ya existe un usuario registrado con el email: " + usuario.getEmail());
         }
-        return usuarioRepository.save(usuario);
+        return new UsuarioResponse(usuarioRepository.save(usuario));
     }
 
-    public Usuario actualizarUsuario(Long id, Usuario usuario) {
-        Usuario usuarioDb = buscarPorId(id);
+    public UsuarioResponse actualizarUsuario(Long id, Usuario usuario) {
+        Usuario usuarioDb = buscarEntidadPorId(id);
 
-        // Si cambia el email, verificar que no lo tenga otro usuario
         if (usuario.getEmail() != null && !usuario.getEmail().equals(usuarioDb.getEmail())) {
             if (usuarioRepository.existsByEmail(usuario.getEmail())) {
                 throw new DuplicateResourceException(
@@ -51,8 +58,7 @@ public class UsuarioService {
         }
 
         usuarioDb.setNombre(usuario.getNombre());
-
-        return usuarioRepository.save(usuarioDb);
+        return new UsuarioResponse(usuarioRepository.save(usuarioDb));
     }
 
     public void eliminarUsuario(Long id) {
