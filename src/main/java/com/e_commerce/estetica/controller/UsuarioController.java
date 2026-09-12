@@ -21,27 +21,22 @@ public class UsuarioController {
 
     @GetMapping({"", "/"})
     public ResponseEntity<List<UsuarioResponse>> traerTodos() {
-        List<UsuarioResponse> usuarios = usuarioService.traerUsuarios()
-                .stream()
-                .map(UsuarioResponse::new)
-                .toList();
-        return ResponseEntity.ok(usuarios);
+        return ResponseEntity.ok(usuarioService.traerUsuarios());
     }
 
     @PostMapping
     public ResponseEntity<UsuarioResponse> crear(@RequestBody Usuario usuario) {
-        Usuario creado = usuarioService.crearUsuario(usuario);
-        return new ResponseEntity<>(new UsuarioResponse(creado), HttpStatus.CREATED);
+        return new ResponseEntity<>(usuarioService.crearUsuario(usuario), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(new UsuarioResponse(usuarioService.buscarPorId(id)));
+        return ResponseEntity.ok(usuarioService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponse> actualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
-        return ResponseEntity.ok(new UsuarioResponse(usuarioService.actualizarUsuario(id, usuario)));
+        return ResponseEntity.ok(usuarioService.actualizarUsuario(id, usuario));
     }
 
     @DeleteMapping("/{id}")
