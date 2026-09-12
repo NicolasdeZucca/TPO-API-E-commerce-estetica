@@ -1,0 +1,22 @@
+services:
+  base-datos:
+    image: mysql:8.0
+    container_name: mysql-open
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=ecommerce_db3
+    ports:
+      - "3306:3306"
+
+  mi-app:
+    build: .
+    container_name: estetica-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - base-datos
+    environment:
+      # IMPORTANTE: Aquí usas el nombre del servicio de la BD como host en vez de localhost
+      - SPRING_DATASOURCE_URL=jdbc:mysql://base-datos:3306/ecommerce_db3?allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
