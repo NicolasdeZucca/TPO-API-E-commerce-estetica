@@ -5,6 +5,7 @@ import com.e_commerce.estetica.dto.OfertaResponseDTO;
 import com.e_commerce.estetica.exception.BadRequestException;
 import com.e_commerce.estetica.exception.ResourceNotFoundException;
 import com.e_commerce.estetica.model.Oferta;
+import com.e_commerce.estetica.repository.ProductoRepository;
 import com.e_commerce.estetica.repository.OfertaRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,11 @@ import java.util.List;
 public class OfertaService {
 
     private final OfertaRepository ofertaRepository;
+    private final ProductoRepository productoRepository;
 
-    public OfertaService(OfertaRepository ofertaRepository) {
+    public OfertaService(OfertaRepository ofertaRepository, ProductoRepository productoRepository) {
         this.ofertaRepository = ofertaRepository;
+        this.productoRepository = productoRepository;
     }
 
     public List<OfertaResponseDTO> traerOfertas() {
@@ -42,6 +45,11 @@ public class OfertaService {
         nuevaOferta.setTitulo(dto.getTitulo());
         nuevaOferta.setDescripcion(dto.getDescripcion());
         nuevaOferta.setPorcentajeDescuento(dto.getPrecioDescuento());
+        nuevaOferta.setFechaInicio(dto.getFechaInicio());
+        nuevaOferta.setFechaFin(dto.getFechaFin());
+        nuevaOferta.setActiva(dto.getActiva() != null && dto.getActiva());
+        nuevaOferta.setProducto(productoRepository.findById(dto.getProductoId())
+            .orElseThrow(() -> new ResourceNotFoundException("Producto", dto.getProductoId())));
         Oferta guardada = ofertaRepository.save(nuevaOferta);
         return new OfertaResponseDTO(guardada);
     }
@@ -54,6 +62,11 @@ public class OfertaService {
         existente.setTitulo(dto.getTitulo());
         existente.setDescripcion(dto.getDescripcion());
         existente.setPorcentajeDescuento(dto.getPrecioDescuento());
+        existente.setFechaInicio(dto.getFechaInicio());
+        existente.setFechaFin(dto.getFechaFin());
+        existente.setActiva(dto.getActiva() != null && dto.getActiva());
+        existente.setProducto(productoRepository.findById(dto.getProductoId())
+            .orElseThrow(() -> new ResourceNotFoundException("Producto", dto.getProductoId())));
 
         Oferta actualizada = ofertaRepository.save(existente);
         return new OfertaResponseDTO(actualizada);
@@ -72,6 +85,12 @@ public class OfertaService {
         }
         if (dto.getPrecioDescuento() == null || dto.getPrecioDescuento() <= 0) {
             throw new BadRequestException("El precio de descuento debe ser mayor a cero");
+        }
+        if (dto.getFechaInicio() == null || dto.getFechaFin() == null) {
+            throw new BadRequestException("Las fechas de inicio y fin son obligatorias");
+        }
+        if (dto.getProductoId() == null) {
+            throw new BadRequestException("El producto es obligatorio");
         }
     }
 }
