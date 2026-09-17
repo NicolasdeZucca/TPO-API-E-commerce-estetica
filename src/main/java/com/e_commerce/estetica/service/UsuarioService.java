@@ -46,6 +46,13 @@ public class UsuarioService {
         return new UsuarioResponse(usuarioRepository.save(usuario));
     }
 
+    public UsuarioResponse crearUsuarioSiNoExiste(Usuario usuario) {
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            return null;
+        }
+        return new UsuarioResponse(usuarioRepository.save(usuario));
+    }
+
     public UsuarioResponse actualizarUsuario(Long id, Usuario usuario) {
         Usuario usuarioDb = buscarEntidadPorId(id);
 

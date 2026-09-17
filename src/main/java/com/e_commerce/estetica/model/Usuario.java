@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+
+import java.util.Set.*;
 
 @Entity
 @Getter
@@ -32,6 +35,14 @@ public class Usuario implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
+    public String getEmail() {
+        return email == null ? null : email.toLowerCase(Locale.ROOT);
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim().toLowerCase(Locale.ROOT);
+    }
+
     @Column(nullable = false)
     private String password;
 
@@ -50,7 +61,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Usamos el email como username
+        return getEmail(); // Usamos el email como username
     }
 
     @Override
