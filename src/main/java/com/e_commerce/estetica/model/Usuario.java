@@ -23,9 +23,6 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String nombreUsuario;
-
     @Column(nullable = false)
     private String nombre;
 
@@ -44,9 +41,6 @@ public class Usuario implements UserDetails {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Carrito carrito;
-
-
-
 
     // --- Métodos de UserDetails (los necesita Spring Security) ---
     @Override
