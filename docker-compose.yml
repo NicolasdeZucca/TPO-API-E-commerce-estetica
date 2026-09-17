@@ -2,6 +2,7 @@ services:
   base-datos:
     image: mysql:8.0
     container_name: mysql-open
+    platform: linux/amd64
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_DATABASE=ecommerce_db3
@@ -11,6 +12,7 @@ services:
   mi-app:
     build: .
     container_name: estetica-app
+    platform: linux/amd64
     ports:
       - "8080:8080"
     depends_on:
