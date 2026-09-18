@@ -19,7 +19,7 @@ public class CategoriaService {
     }
 
     public List<Categoria> traerCategorias() {
-        return categoriaRepository.findAll();
+        return categoriaRepository.findAllByOrderByIdAsc();
     }
 
     public Categoria buscarPorId(Long id) {
