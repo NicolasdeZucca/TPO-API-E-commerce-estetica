@@ -7,10 +7,12 @@ import com.e_commerce.estetica.exception.ResourceNotFoundException;
 import com.e_commerce.estetica.model.Usuario;
 import com.e_commerce.estetica.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional 
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
