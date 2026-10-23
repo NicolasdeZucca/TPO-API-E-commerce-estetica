@@ -8,10 +8,12 @@ import com.e_commerce.estetica.model.Oferta;
 import com.e_commerce.estetica.repository.ProductoRepository;
 import com.e_commerce.estetica.repository.OfertaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional 
 public class OfertaService {
 
     private final OfertaRepository ofertaRepository;
