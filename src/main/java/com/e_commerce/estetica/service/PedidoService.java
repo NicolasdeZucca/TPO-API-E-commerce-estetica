@@ -12,6 +12,8 @@ import com.e_commerce.estetica.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -79,9 +81,13 @@ public class PedidoService {
             productoRepository.save(producto);
 
             PedidoItem pedidoItem = new PedidoItem();
+            pedidoItem.setProducto(producto);
             pedidoItem.setNombreProducto(producto.getNombre());
             pedidoItem.setCantidad(item.getCantidad());
             pedidoItem.setPrecioUnitario(producto.getPrecio());
+            pedidoItem.setSubtotal(BigDecimal.valueOf(producto.getPrecio())
+                    .multiply(BigDecimal.valueOf(item.getCantidad()))
+                    .setScale(2, RoundingMode.HALF_UP));
             pedido.agregarItem(pedidoItem);
         }
 

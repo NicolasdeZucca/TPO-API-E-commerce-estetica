@@ -56,8 +56,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Solo login y registro son públicos; perfil y otros recursos de cuenta requieren JWT
                 .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
-                // Consola H2: libre para desarrollo
-                .requestMatchers("/h2-console/**").permitAll()
                 // Catálogo público: cualquiera puede VER productos y ofertas
                 .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/ofertas/**").permitAll()
@@ -77,8 +75,6 @@ public class SecurityConfig {
                 // Todo lo demás requiere estar autenticado
                 .anyRequest().authenticated()
             )
-            // Habilitar la consola H2 (usa frames)
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             // Agregar nuestro filtro JWT ANTES del filtro de Spring Security
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

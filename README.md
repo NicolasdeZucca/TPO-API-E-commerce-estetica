@@ -29,7 +29,7 @@ API RESTful desarrollada en **Java con Spring Boot** para la gestión backend de
 
 El frontend envía el token con `Authorization: Bearer <token>`. Al confirmar un pedido, el backend comprueba stock, calcula el costo de envío, persiste el pedido, descuenta las unidades vendidas y vacía el carrito en una transacción.
 
-La configuración local predeterminada usa una base H2 en archivo. `docker-compose.yml` ofrece una configuración alternativa para MySQL.
+La configuración local predeterminada usa MySQL en Docker, en `localhost:3307` y la base `ecommerce_db3`. Al ejecutar la aplicación dentro de Docker Compose, `SPRING_DATASOURCE_URL` conecta al servicio `base-datos` por el puerto interno `3306`. La URL, el usuario y la contraseña pueden sobrescribirse mediante variables `SPRING_DATASOURCE_*`.
 
 ## 📂 Estructura del Proyecto
 
