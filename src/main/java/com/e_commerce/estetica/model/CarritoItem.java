@@ -20,6 +20,8 @@ public class CarritoItem {
     @Column(nullable = false)
     private Integer cantidad;
 
+    private String formato;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "carrito_id", nullable = false)
     @JsonIgnore
