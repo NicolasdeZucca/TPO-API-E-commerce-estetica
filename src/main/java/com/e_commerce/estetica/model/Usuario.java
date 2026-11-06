@@ -10,10 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-
-import java.util.Set.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -52,6 +52,14 @@ public class Usuario implements UserDetails {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Carrito carrito;
+
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_favoritos",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
+    private Set<Producto> favoritos = new HashSet<>();
 
     // --- Métodos de UserDetails (los necesita Spring Security) ---
     @Override
