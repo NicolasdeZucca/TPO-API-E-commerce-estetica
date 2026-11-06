@@ -54,8 +54,8 @@ public class SecurityConfig {
             // Sesiones STATELESS: no guarda sesión en el servidor, usa JWT
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Registro y Login: LIBRE para todos
-                .requestMatchers("/api/auth/**").permitAll()
+                // Solo login y registro son públicos; perfil y otros recursos de cuenta requieren JWT
+                .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
                 // Consola H2: libre para desarrollo
                 .requestMatchers("/h2-console/**").permitAll()
                 // Catálogo público: cualquiera puede VER productos y ofertas
