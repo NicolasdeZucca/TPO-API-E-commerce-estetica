@@ -6,6 +6,7 @@ API RESTful desarrollada en **Java con Spring Boot** para la gestión backend de
 
 * **Seguridad & Autenticación (JWT):** Implementación de Spring Security y JSON Web Tokens (JWT) con gestión de roles (`Role`, `AuthController`, `CustomUserDetailsService`).
 * **Gestión de Catálogo & Productos:** Endpoints para gestión de `Producto`, categorías (`Categoria`) y ofertas vigentes (`Oferta`).
+* **Cuenta & Compras:** Carrito y favoritos persistidos por usuario autenticado, consulta de perfil y creación/historial de pedidos con validación de stock.
 * **Arquitectura de Dominio (DTO & Services):**
   * Implementación de DTOs para desacoplar el modelo de dominio de los contratos de entrada/salida de la API.
   * Control de excepciones personalizado (`exception` package) y respuestas estandarizadas.
@@ -16,6 +17,19 @@ API RESTful desarrollada en **Java con Spring Boot** para la gestión backend de
 * **Lenguaje & Framework:** Java, Spring Boot, Spring Web, Spring Security.
 * **ORM & Persistencia:** Spring Data JPA, Hibernate, MySQL Database.
 * **Herramientas & Despliegue:** Lombok, JWT (JSON Web Tokens), Docker, Postman.
+
+## Endpoints de cuenta (JWT requerido)
+
+| Método | Endpoint | Uso |
+|---|---|---|
+| `GET` | `/api/auth/me` | Datos del usuario autenticado |
+| `GET`, `PUT`, `DELETE` | `/api/carrito` | Consultar, reemplazar o vaciar carrito |
+| `GET`, `PUT` | `/api/favoritos` | Consultar o reemplazar favoritos |
+| `GET`, `POST` | `/api/pedidos` | Historial y confirmación de compra desde el carrito |
+
+El frontend envía el token con `Authorization: Bearer <token>`. Al confirmar un pedido, el backend comprueba stock, calcula el costo de envío, persiste el pedido, descuenta las unidades vendidas y vacía el carrito en una transacción.
+
+La configuración local predeterminada usa una base H2 en archivo. `docker-compose.yml` ofrece una configuración alternativa para MySQL.
 
 ## 📂 Estructura del Proyecto
 
