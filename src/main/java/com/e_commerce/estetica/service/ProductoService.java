@@ -6,6 +6,7 @@ import com.e_commerce.estetica.exception.BadRequestException;
 import com.e_commerce.estetica.exception.ResourceNotFoundException;
 import com.e_commerce.estetica.model.Producto;
 import com.e_commerce.estetica.model.Categoria;
+import com.e_commerce.estetica.model.ProductoImagen;
 import com.e_commerce.estetica.repository.CategoriaRepository;
 import com.e_commerce.estetica.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class ProductoService {
         this.productoRepository = productoRepository;
         this.categoriaRepository = categoriaRepository;
     }
+
 
     public List<ProductoResponseDTO> traerProductos() {
         return productoRepository.findAllByOrderByNombreAsc()
@@ -51,6 +53,7 @@ public class ProductoService {
         producto.setPrecio(dto.getPrecio());
         producto.setStock(dto.getStock());
         producto.setCategoria(buscarCategoriaPorId(dto.getCategoriaId()));
+        actualizarImagenes(producto, dto.getImagenes());
         Producto guardado = productoRepository.save(producto);
         return new ProductoResponseDTO(guardado);
     }
@@ -66,6 +69,9 @@ public class ProductoService {
         prodDb.setPrecio(dto.getPrecio());
         prodDb.setStock(dto.getStock());
         prodDb.setCategoria(buscarCategoriaPorId(dto.getCategoriaId()));
+        if (dto.getImagenes() != null) {
+            actualizarImagenes(prodDb, dto.getImagenes());
+        }
 
         Producto actualizado = productoRepository.save(prodDb);
         return new ProductoResponseDTO(actualizado);
@@ -91,5 +97,22 @@ public class ProductoService {
     private Categoria buscarCategoriaPorId(Long id) {
         return categoriaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Categoría", id));
+    }
+
+    private void actualizarImagenes(Producto producto, List<String> urls) {
+        producto.getImagenes().clear();
+        if (urls == null) {
+            return;
+        }
+
+        for (String url : urls) {
+            if (url == null || url.isBlank()) {
+                continue;
+            }
+            ProductoImagen imagen = new ProductoImagen();
+            imagen.setUrlImagen(url.trim());
+            imagen.setProducto(producto);
+            producto.getImagenes().add(imagen);
+        }
     }
 }
