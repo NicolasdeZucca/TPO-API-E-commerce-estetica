@@ -3,6 +3,7 @@ package com.e_commerce.estetica.config;
 import com.e_commerce.estetica.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -35,26 +36,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. Extraer el header "Authorization"
-        String authHeader = request.getHeader("Authorization");
+        // 1. Extraer el token desde la cookie HttpOnly
+        String token = extractToken(request);
 
-        // 2. Verificar que venga con "Bearer "
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 3. Extraer el token (sin el "Bearer ")
-        String token = authHeader.substring(7);
-
-        // 4. Validar el token y cargar el usuario
+        // 2. Validar el token y cargar el usuario
         if (jwtUtils.validateToken(token)) {
             String email = jwtUtils.getEmailFromToken(token);
 
             try {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-                // 5. Crear la autenticación y cargarla en el SecurityContext
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
@@ -68,5 +64,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("jwt".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+
+        return null;
     }
 }

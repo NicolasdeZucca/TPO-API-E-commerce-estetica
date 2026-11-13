@@ -1,5 +1,6 @@
 package com.e_commerce.estetica.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class AuthResponse {
+
+    @JsonIgnore
     private String token;
+
     private String email;
     private String rol;
 }
