@@ -65,6 +65,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/ofertas/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/imagenes/**").permitAll()
+                // Subir imágenes de productos: solo ADMIN
+                .requestMatchers(HttpMethod.POST, "/api/imagenes/**").hasAuthority("ROLE_ADMIN")
                 // Crear, modificar o eliminar productos/ofertas: solo ADMIN
                 .requestMatchers(HttpMethod.POST, "/api/productos/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAuthority("ROLE_ADMIN")
